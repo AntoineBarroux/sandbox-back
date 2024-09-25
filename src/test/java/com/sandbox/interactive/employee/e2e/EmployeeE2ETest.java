@@ -119,7 +119,7 @@ public class EmployeeE2ETest {
                 .when()
                 .post("/employee")
                 .then()
-                .statusCode(HttpStatus.SC_NOT_FOUND);
+                .statusCode(HttpStatus.SC_BAD_REQUEST);
     }
 
     @Test

@@ -1,11 +1,11 @@
 package com.sandbox.interactive.employee.controller;
 
+import com.sandbox.interactive.employee.controller.requests.EmployeeCreateRequest;
 import com.sandbox.interactive.employee.controller.requests.EmployeeUpdateRequest;
-import com.sandbox.interactive.employee.mapper.EmployeeIdToEntityMapper;
+import com.sandbox.interactive.employee.exception.SupervisorNotFoundException;
 import com.sandbox.interactive.employee.mapper.EmployeeMapperImpl;
 import com.sandbox.interactive.employee.repository.entity.EmployeeEntity;
 import com.sandbox.interactive.employee.service.EmployeeService;
-import com.sandbox.interactive.employee.service.domain.EmployeeRepository;
 import com.sandbox.interactive.employee.service.model.Employee;
 import jakarta.persistence.EntityNotFoundException;
 import org.junit.jupiter.api.Test;
@@ -39,13 +39,7 @@ class EmployeeControllerTest {
     private MockMvc mockMvc;
 
     @SpyBean
-    private EmployeeIdToEntityMapper employeeIdToEntityMapper;
-
-    @SpyBean
     private EmployeeMapperImpl employeeMapper;
-
-    @MockBean
-    private EmployeeRepository employeeRepository;
 
     @MockBean
     private EmployeeService employeeService;
@@ -77,7 +71,7 @@ class EmployeeControllerTest {
     @Test
     void should_correctly_create_employee() throws Exception {
         final var employee = new Employee(UUID.randomUUID(), ZonedDateTime.now(), "John", "Doe", "Manager", Optional.empty());
-        when(employeeService.saveEmployee(any(Employee.class))).thenReturn(employee);
+        when(employeeService.createEmployee(any(EmployeeCreateRequest.class))).thenReturn(employee);
 
         mockMvc.perform(post("/employee").content("""
                          {
@@ -103,8 +97,7 @@ class EmployeeControllerTest {
         managerEntity.setId(managerId);
         final var manager = employeeMapper.toDomain(managerEntity);
         final var employee = new Employee(UUID.randomUUID(), ZonedDateTime.now(), "Jane", "Doe", "Developer", Optional.of(manager));
-        when(employeeRepository.findById(any(UUID.class))).thenReturn(Optional.of(managerEntity));
-        when(employeeService.saveEmployee(any(Employee.class))).thenReturn(employee);
+        when(employeeService.createEmployee(any(EmployeeCreateRequest.class))).thenReturn(employee);
 
         mockMvc.perform(post("/employee").content("""
                          {
@@ -120,8 +113,9 @@ class EmployeeControllerTest {
     }
 
     @Test
-    void should_get_not_found_if_supervisor_cant_be_found() throws Exception {
+    void should_get_bad_request_if_supervisor_cant_be_found() throws Exception {
         final var managerId = UUID.randomUUID();
+        when(employeeService.createEmployee(any(EmployeeCreateRequest.class))).thenThrow(new SupervisorNotFoundException("Supervisor not found"));
 
         mockMvc.perform(post("/employee").content("""
                  {
@@ -129,7 +123,7 @@ class EmployeeControllerTest {
                       "lastName": "Doe",
                       "position": "Developer",
                       "supervisorId": "%s"
-                }""".formatted(managerId.toString())).contentType(MediaType.APPLICATION_JSON)).andExpect(status().isNotFound());
+                }""".formatted(managerId.toString())).contentType(MediaType.APPLICATION_JSON)).andExpect(status().isBadRequest());
     }
 
     @Test
@@ -166,7 +160,7 @@ class EmployeeControllerTest {
     }
 
     @Test
-    void should_get_not_found_if_employee_does_not_exist() throws Exception {
+    void should_get_bad_request_if_employee_does_not_exist() throws Exception {
         final var employee = new Employee(UUID.randomUUID(), ZonedDateTime.now(), "John", "Doe", "Manager", Optional.empty());
         when(employeeService.updateEmployee(any(EmployeeUpdateRequest.class))).thenThrow(new EntityNotFoundException("Employee not found"));
 
@@ -178,6 +172,21 @@ class EmployeeControllerTest {
                       "position": "Developer",
                       "supervisorId": null
                 }""".formatted(employee.id().toString())).contentType(MediaType.APPLICATION_JSON)).andExpect(status().isNotFound());
+    }
+
+    @Test
+    void should_get_bad_request_if_supervisor_does_not_exist() throws Exception {
+        final var employee = new Employee(UUID.randomUUID(), ZonedDateTime.now(), "John", "Doe", "Manager", Optional.empty());
+        when(employeeService.updateEmployee(any(EmployeeUpdateRequest.class))).thenThrow(new SupervisorNotFoundException("Supervisor not found"));
+
+        mockMvc.perform(put("/employee/" + employee.id()).content("""
+                 {
+                      "id": "%s",
+                      "firstName": "Jane",
+                      "lastName": "Doe",
+                      "position": "Developer",
+                      "supervisorId": null
+                }""".formatted(employee.id().toString())).contentType(MediaType.APPLICATION_JSON)).andExpect(status().isBadRequest());
     }
 
     @Test

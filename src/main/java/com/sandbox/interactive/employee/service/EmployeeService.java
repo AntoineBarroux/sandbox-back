@@ -1,5 +1,6 @@
 package com.sandbox.interactive.employee.service;
 
+import com.sandbox.interactive.employee.controller.requests.EmployeeCreateRequest;
 import com.sandbox.interactive.employee.controller.requests.EmployeeUpdateRequest;
 import com.sandbox.interactive.employee.exception.SupervisorNotFoundException;
 import com.sandbox.interactive.employee.mapper.EmployeeMapper;
@@ -30,10 +31,15 @@ public class EmployeeService {
                 .map(employeeMapper::toDomain);
     }
 
-    public Employee saveEmployee(Employee employee) {
-        return employeeMapper.toDomain(
-                employeeRepository.save(employeeMapper.toEntity(employee))
-        );
+    public Employee createEmployee(EmployeeCreateRequest employeeCreateRequest) {
+        final Optional<EmployeeEntity> supervisor = employeeCreateRequest.supervisorId().isPresent() ?
+                employeeCreateRequest.supervisorId()
+                        .map(employeeRepository::findById)
+                        .filter(Optional::isPresent)
+                        .orElseThrow(() -> new SupervisorNotFoundException("Supervisor not found")) :
+                Optional.empty();
+
+        return saveEmployee(employeeMapper.createToDomain(employeeCreateRequest, supervisor));
     }
 
     public Employee updateEmployee(EmployeeUpdateRequest employeeUpdateRequest) {
@@ -48,6 +54,12 @@ public class EmployeeService {
                 Optional.empty();
 
         return saveEmployee(employeeMapper.updateToDomain(employeeUpdateRequest, supervisor));
+    }
+
+    private Employee saveEmployee(Employee employee) {
+        return employeeMapper.toDomain(
+                employeeRepository.save(employeeMapper.toEntity(employee))
+        );
     }
 
     public void deleteEmployeeById(UUID employeeId) {

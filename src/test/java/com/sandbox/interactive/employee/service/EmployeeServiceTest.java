@@ -1,15 +1,14 @@
 package com.sandbox.interactive.employee.service;
 
+import com.sandbox.interactive.employee.controller.requests.EmployeeCreateRequest;
 import com.sandbox.interactive.employee.controller.requests.EmployeeUpdateRequest;
 import com.sandbox.interactive.employee.mapper.EmployeeMapperImpl;
 import com.sandbox.interactive.employee.repository.EmployeeRepositoryStub;
-import com.sandbox.interactive.employee.service.model.Employee;
 import jakarta.persistence.EntityNotFoundException;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
-import java.time.ZonedDateTime;
 import java.util.Optional;
 import java.util.UUID;
 
@@ -36,8 +35,8 @@ class EmployeeServiceTest {
     @Test
     void should_correctly_update_if_employee_exists() {
         // given
-        final var employee = new Employee(UUID.randomUUID(), ZonedDateTime.now(), "John", "Doe", "Software Developer", Optional.empty());
-        final var saved = employeeService.saveEmployee(employee);
+        final var employeeCreateRequest = new EmployeeCreateRequest("John", "Doe", "Software Developer", Optional.empty());
+        final var saved = employeeService.createEmployee(employeeCreateRequest);
 
         final var employeeUpdateRequest = new EmployeeUpdateRequest(saved.id(), "Jane", "Doe", "Software Developer", Optional.empty());
         // when

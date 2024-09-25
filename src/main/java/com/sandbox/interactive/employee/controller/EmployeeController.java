@@ -59,7 +59,7 @@ public class EmployeeController {
         LOG.debug("Payload : {}", employeeCreateRequest);
 
         final var created = employeeMapper.toDTO(
-                employeeService.saveEmployee(employeeMapper.createToDomain(employeeCreateRequest))
+                employeeService.createEmployee(employeeCreateRequest)
         );
         return ResponseEntity.created(URI.create("/employees/" + created.id()))
                 .body(created);

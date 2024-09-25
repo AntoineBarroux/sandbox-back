@@ -6,10 +6,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
-import java.util.UUID;
+import java.util.*;
 
 public class EmployeeRepositoryStub implements EmployeeRepository {
 
@@ -31,6 +28,9 @@ public class EmployeeRepositoryStub implements EmployeeRepository {
     public EmployeeEntity save(final EmployeeEntity employee) {
         if (existsById(employee.getId())) {
             deleteById(employee.getId());
+        }
+        if (Objects.isNull(employee.getId())) {
+            employee.setId(UUID.randomUUID());
         }
         employees.add(employee);
         return employee;

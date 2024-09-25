@@ -13,4 +13,19 @@ public record Employee(
         Optional<Employee> supervisor
 ) {
 
+    public static Employee createWithSupervisor(String firstName, String lastName, String position, Employee supervisor) {
+        return new Employee(null, null, firstName, lastName, position, Optional.of(supervisor));
+    }
+
+    public static Employee createWithoutSupervisor(String firstName, String lastName, String position) {
+        return new Employee(null, null, firstName, lastName, position, Optional.empty());
+    }
+
+    public static Employee updateWithSupervisor(UUID id, String firstName, String lastName, String position, Employee supervisor) {
+        return new Employee(id, null, firstName, lastName, position, Optional.of(supervisor));
+    }
+
+    public static Employee updateWithoutSupervisor(UUID id, String firstName, String lastName, String position) {
+        return new Employee(id, null, firstName, lastName, position, Optional.empty());
+    }
 }

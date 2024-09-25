@@ -6,31 +6,44 @@ import com.sandbox.interactive.employee.controller.requests.EmployeeUpdateReques
 import com.sandbox.interactive.employee.repository.entity.EmployeeEntity;
 import com.sandbox.interactive.employee.service.model.Employee;
 import org.mapstruct.Mapper;
-import org.mapstruct.Mapping;
 
 import java.util.Optional;
 
-@Mapper(uses = { EmployeeIdToEntityMapper.class})
+@Mapper
 public interface EmployeeMapper {
 
     EmployeeEntity toEntity(Employee employee);
     Employee toDomain(EmployeeEntity employee);
     EmployeeDTO toDTO(Employee employee);
 
-    @Mapping(target = "id", ignore = true)
-    @Mapping(target = "createdAt", ignore = true)
-    @Mapping(target = "supervisor", source = "supervisorId")
-    Employee createToDomain(EmployeeCreateRequest employeeCreateRequest);
+    default Employee createToDomain(EmployeeCreateRequest employeeCreateRequest, Optional<EmployeeEntity> supervisor) {
+        return supervisor.map(this::toDomain)
+                .map(supervisorEntity -> Employee.createWithSupervisor(
+                        employeeCreateRequest.firstName(),
+                        employeeCreateRequest.lastName(),
+                        employeeCreateRequest.position(),
+                        supervisorEntity
+                )).orElseGet(() -> Employee.createWithoutSupervisor(
+                        employeeCreateRequest.firstName(),
+                        employeeCreateRequest.lastName(),
+                        employeeCreateRequest.position()
+                ));
+    }
 
     default Employee updateToDomain(EmployeeUpdateRequest employeeUpdateRequest, Optional<EmployeeEntity> supervisor) {
-        return new Employee(
-                employeeUpdateRequest.id(),
-                null,
-                employeeUpdateRequest.firstName(),
-                employeeUpdateRequest.lastName(),
-                employeeUpdateRequest.position(),
-                supervisor.map(this::toDomain)
-        );
+        return supervisor.map(this::toDomain)
+                .map(supervisorEntity -> Employee.updateWithSupervisor(
+                        employeeUpdateRequest.id(),
+                        employeeUpdateRequest.firstName(),
+                        employeeUpdateRequest.lastName(),
+                        employeeUpdateRequest.position(),
+                        supervisorEntity
+                )).orElseGet(() -> Employee.updateWithoutSupervisor(
+                        employeeUpdateRequest.id(),
+                        employeeUpdateRequest.firstName(),
+                        employeeUpdateRequest.lastName(),
+                        employeeUpdateRequest.position()
+                ));
     }
 
     default EmployeeEntity toSupervisor(Optional<Employee> supervisor) {
