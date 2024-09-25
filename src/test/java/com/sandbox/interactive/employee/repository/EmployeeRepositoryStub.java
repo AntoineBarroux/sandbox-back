@@ -1,7 +1,7 @@
 package com.sandbox.interactive.employee.repository;
 
 import com.sandbox.interactive.employee.repository.entity.EmployeeEntity;
-import com.sandbox.interactive.employee.service.domain.Employees;
+import com.sandbox.interactive.employee.service.domain.EmployeeRepository;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
@@ -11,7 +11,7 @@ import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
-public class EmployeeRepositoryStub implements Employees {
+public class EmployeeRepositoryStub implements EmployeeRepository {
 
     private final List<EmployeeEntity> employees = new ArrayList<>();
 
@@ -45,5 +45,10 @@ public class EmployeeRepositoryStub implements Employees {
     public boolean existsById(final UUID id) {
         return employees.stream()
                 .anyMatch(employee -> employee.getId().equals(id));
+    }
+
+    @Override
+    public void deleteAll() {
+        employees.clear();
     }
 }

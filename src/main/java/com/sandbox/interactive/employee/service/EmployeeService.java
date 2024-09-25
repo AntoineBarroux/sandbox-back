@@ -1,7 +1,7 @@
 package com.sandbox.interactive.employee.service;
 
 import com.sandbox.interactive.employee.mapper.EmployeeMapper;
-import com.sandbox.interactive.employee.service.domain.Employees;
+import com.sandbox.interactive.employee.service.domain.EmployeeRepository;
 import com.sandbox.interactive.employee.service.model.Employee;
 import jakarta.persistence.EntityNotFoundException;
 import org.springframework.data.domain.Page;
@@ -13,10 +13,10 @@ import java.util.UUID;
 @Service
 public class EmployeeService {
 
-    private final Employees employeeRepository;
+    private final EmployeeRepository employeeRepository;
     private final EmployeeMapper employeeMapper;
 
-    public EmployeeService(Employees employeeRepository, final EmployeeMapper employeeMapper) {
+    public EmployeeService(EmployeeRepository employeeRepository, final EmployeeMapper employeeMapper) {
         this.employeeRepository = employeeRepository;
         this.employeeMapper = employeeMapper;
     }

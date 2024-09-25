@@ -1,7 +1,7 @@
 package com.sandbox.interactive.employee.mapper;
 
-import com.sandbox.interactive.employee.repository.JpaEmployeeRepository;
 import com.sandbox.interactive.employee.repository.entity.EmployeeEntity;
+import com.sandbox.interactive.employee.service.domain.EmployeeRepository;
 import jakarta.persistence.EntityNotFoundException;
 import org.springframework.stereotype.Component;
 
@@ -11,9 +11,9 @@ import java.util.UUID;
 @Component
 public class EmployeeIdToEntityMapper {
 
-    private final JpaEmployeeRepository employeeRepository;
+    private final EmployeeRepository employeeRepository;
 
-    public EmployeeIdToEntityMapper(final JpaEmployeeRepository employeeRepository) {
+    public EmployeeIdToEntityMapper(final EmployeeRepository employeeRepository) {
         this.employeeRepository = employeeRepository;
     }
 

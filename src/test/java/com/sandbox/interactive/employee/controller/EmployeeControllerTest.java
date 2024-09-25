@@ -2,9 +2,9 @@ package com.sandbox.interactive.employee.controller;
 
 import com.sandbox.interactive.employee.mapper.EmployeeIdToEntityMapper;
 import com.sandbox.interactive.employee.mapper.EmployeeMapperImpl;
-import com.sandbox.interactive.employee.repository.JpaEmployeeRepository;
 import com.sandbox.interactive.employee.repository.entity.EmployeeEntity;
 import com.sandbox.interactive.employee.service.EmployeeService;
+import com.sandbox.interactive.employee.service.domain.EmployeeRepository;
 import com.sandbox.interactive.employee.service.model.Employee;
 import jakarta.persistence.EntityNotFoundException;
 import org.junit.jupiter.api.Test;
@@ -44,7 +44,7 @@ class EmployeeControllerTest {
     private EmployeeMapperImpl employeeMapper;
 
     @MockBean
-    private JpaEmployeeRepository employeeRepository;
+    private EmployeeRepository employeeRepository;
 
     @MockBean
     private EmployeeService employeeService;

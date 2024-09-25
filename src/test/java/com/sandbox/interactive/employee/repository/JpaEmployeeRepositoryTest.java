@@ -1,6 +1,7 @@
 package com.sandbox.interactive.employee.repository;
 
 import com.sandbox.interactive.employee.repository.entity.EmployeeEntity;
+import com.sandbox.interactive.employee.service.domain.EmployeeRepository;
 import jakarta.persistence.EntityManager;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -17,7 +18,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 class JpaEmployeeRepositoryTest {
 
     @Autowired
-    private JpaEmployeeRepository employeeRepository;
+    private EmployeeRepository employeeRepository;
 
     @Autowired
     private EntityManager entityManager;
