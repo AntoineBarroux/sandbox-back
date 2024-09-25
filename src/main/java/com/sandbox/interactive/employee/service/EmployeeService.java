@@ -2,6 +2,7 @@ package com.sandbox.interactive.employee.service;
 
 import com.sandbox.interactive.employee.controller.requests.EmployeeCreateRequest;
 import com.sandbox.interactive.employee.controller.requests.EmployeeUpdateRequest;
+import com.sandbox.interactive.employee.exception.HierarchyException;
 import com.sandbox.interactive.employee.exception.SupervisorNotFoundException;
 import com.sandbox.interactive.employee.mapper.EmployeeMapper;
 import com.sandbox.interactive.employee.repository.entity.EmployeeEntity;
@@ -52,6 +53,9 @@ public class EmployeeService {
                         .filter(Optional::isPresent)
                         .orElseThrow(() -> new SupervisorNotFoundException("Supervisor not found")) :
                 Optional.empty();
+        if (supervisor.isPresent() && supervisor.get().getId().equals(employeeUpdateRequest.id())) {
+            throw new HierarchyException("Supervisor cannot be the employee himself !");
+        }
 
         return saveEmployee(employeeMapper.updateToDomain(employeeUpdateRequest, supervisor));
     }

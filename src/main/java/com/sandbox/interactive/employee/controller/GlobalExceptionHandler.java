@@ -1,5 +1,6 @@
 package com.sandbox.interactive.employee.controller;
 
+import com.sandbox.interactive.employee.exception.HierarchyException;
 import com.sandbox.interactive.employee.exception.SupervisorNotFoundException;
 import com.sandbox.interactive.employee.exception.UpdateMismatchIdsException;
 import jakarta.persistence.EntityNotFoundException;
@@ -21,7 +22,7 @@ public class GlobalExceptionHandler {
         return ProblemDetail.forStatusAndDetail(HttpStatus.NOT_FOUND, exception.getMessage());
     }
 
-    @ExceptionHandler(value = {UpdateMismatchIdsException.class, SupervisorNotFoundException.class})
+    @ExceptionHandler(value = {UpdateMismatchIdsException.class, SupervisorNotFoundException.class, HierarchyException.class})
     public ProblemDetail handleBadRequest(RuntimeException exception) {
         logger.error(exception.getMessage());
         return ProblemDetail.forStatusAndDetail(HttpStatus.BAD_REQUEST, exception.getMessage());

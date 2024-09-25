@@ -74,7 +74,7 @@ public class EmployeeController {
                     content = { @Content(mediaType = "application/json") }
             ),
             @ApiResponse(responseCode = "400",
-                    description = "Ids in path and payload does not match, or the employee's supervisor does not exist",
+                    description = "Ids in path and payload does not match, or the employee's supervisor does not exist, or the supervisor is the same as the employee",
                     content = { @Content(mediaType = "application/json") }
             ),
     })

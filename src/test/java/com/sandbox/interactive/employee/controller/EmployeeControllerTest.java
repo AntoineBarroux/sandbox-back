@@ -2,6 +2,7 @@ package com.sandbox.interactive.employee.controller;
 
 import com.sandbox.interactive.employee.controller.requests.EmployeeCreateRequest;
 import com.sandbox.interactive.employee.controller.requests.EmployeeUpdateRequest;
+import com.sandbox.interactive.employee.exception.HierarchyException;
 import com.sandbox.interactive.employee.exception.SupervisorNotFoundException;
 import com.sandbox.interactive.employee.mapper.EmployeeMapperImpl;
 import com.sandbox.interactive.employee.mapper.SupervisorMapperImpl;
@@ -184,6 +185,21 @@ class EmployeeControllerTest {
     void should_get_bad_request_if_supervisor_does_not_exist() throws Exception {
         final var employee = new Employee(UUID.randomUUID(), ZonedDateTime.now(), "John", "Doe", "Manager", Optional.empty());
         when(employeeService.updateEmployee(any(EmployeeUpdateRequest.class))).thenThrow(new SupervisorNotFoundException("Supervisor not found"));
+
+        mockMvc.perform(put("/employee/" + employee.id()).content("""
+                 {
+                      "id": "%s",
+                      "firstName": "Jane",
+                      "lastName": "Doe",
+                      "position": "Developer",
+                      "supervisorId": null
+                }""".formatted(employee.id().toString())).contentType(MediaType.APPLICATION_JSON)).andExpect(status().isBadRequest());
+    }
+
+    @Test
+    void should_get_bad_request_if_supervisor_is_the_employee_himself() throws Exception {
+        final var employee = new Employee(UUID.randomUUID(), ZonedDateTime.now(), "John", "Doe", "Manager", Optional.empty());
+        when(employeeService.updateEmployee(any(EmployeeUpdateRequest.class))).thenThrow(new HierarchyException("Supervisor cannot be the the employee himself !"));
 
         mockMvc.perform(put("/employee/" + employee.id()).content("""
                  {

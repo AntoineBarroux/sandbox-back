@@ -110,6 +110,23 @@ public class EmployeeE2ETest {
     }
 
     @Test
+    void should_correctly_handles_update_employee_supervisor_must_not_be_employee_himself() {
+        final var employee = createEmployee();
+
+        final var updatedEmployee = new FixtureReader().read("employee/update-employee.json")
+                .replace("%id%", employee.id().toString())
+                .replace("%supervisorId%", employee.id().toString());
+
+        RestAssured.given()
+                .contentType("application/json")
+                .body(updatedEmployee)
+                .when()
+                .put("/employee/" + employee.id())
+                .then()
+                .statusCode(HttpStatus.SC_BAD_REQUEST);
+    }
+
+    @Test
     void should_correctly_handles_create_employee_supervisor_does_not_exist_error() {
         final var employee = new FixtureReader().read("employee/create-employee-with-supervisor.json")
                 .replace("%supervisorId%", UUID.randomUUID().toString());
