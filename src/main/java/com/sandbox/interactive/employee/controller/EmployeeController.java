@@ -52,7 +52,7 @@ public class EmployeeController {
     @Operation(summary = "Creates an employee")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "201", description = "Employee successfully created", content = { @Content(mediaType = "application/json") }),
-            @ApiResponse(responseCode = "404", description = "The employee's supervisor does not exist", content = { @Content(mediaType = "application/json") }),
+            @ApiResponse(responseCode = "400", description = "The employee's supervisor does not exist", content = { @Content(mediaType = "application/json") }),
     })
     public ResponseEntity<EmployeeDTO> createEmployee(@RequestBody EmployeeCreateRequest employeeCreateRequest) {
         LOG.info("Calling POST employee");
@@ -70,10 +70,13 @@ public class EmployeeController {
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Employee successfully updated", content = { @Content(mediaType = "application/json") }),
             @ApiResponse(responseCode = "404",
-                    description = "The employee you're trying to update does not exists, or the employee's supervisor does not exist",
+                    description = "The employee you're trying to update does not exists",
                     content = { @Content(mediaType = "application/json") }
             ),
-            @ApiResponse(responseCode = "400", description = "Ids in path and payload does not match", content = { @Content(mediaType = "application/json") }),
+            @ApiResponse(responseCode = "400",
+                    description = "Ids in path and payload does not match, or the employee's supervisor does not exist",
+                    content = { @Content(mediaType = "application/json") }
+            ),
     })
     public ResponseEntity<EmployeeDTO> updateEmployee(@PathVariable("id") UUID id, @RequestBody EmployeeUpdateRequest employeeUpdateRequest) {
         LOG.info("Calling PUT employee with id {}", id);
