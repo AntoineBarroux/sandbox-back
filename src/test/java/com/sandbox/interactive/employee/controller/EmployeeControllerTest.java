@@ -4,6 +4,7 @@ import com.sandbox.interactive.employee.controller.requests.EmployeeCreateReques
 import com.sandbox.interactive.employee.controller.requests.EmployeeUpdateRequest;
 import com.sandbox.interactive.employee.exception.SupervisorNotFoundException;
 import com.sandbox.interactive.employee.mapper.EmployeeMapperImpl;
+import com.sandbox.interactive.employee.mapper.SupervisorMapperImpl;
 import com.sandbox.interactive.employee.repository.entity.EmployeeEntity;
 import com.sandbox.interactive.employee.service.EmployeeService;
 import com.sandbox.interactive.employee.service.model.Employee;
@@ -40,6 +41,9 @@ class EmployeeControllerTest {
 
     @SpyBean
     private EmployeeMapperImpl employeeMapper;
+
+    @SpyBean
+    private SupervisorMapperImpl supervisorMapper;
 
     @MockBean
     private EmployeeService employeeService;
@@ -109,7 +113,9 @@ class EmployeeControllerTest {
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON)).andExpect(jsonPath("$.id").isNotEmpty())
                 .andExpect(jsonPath("$.createdAt").isNotEmpty()).andExpect(jsonPath("$.firstName").value("Jane"))
                 .andExpect(jsonPath("$.lastName").value("Doe")).andExpect(jsonPath("$.position").value("Developer"))
-                .andExpect(jsonPath("$.supervisor.id").value(managerId.toString()));
+                .andExpect(jsonPath("$.supervisor.id").value(managerId.toString()))
+                .andExpect(jsonPath("$.supervisor.firstName").value("John"))
+                .andExpect(jsonPath("$.supervisor.lastName").value("Doe"));
     }
 
     @Test

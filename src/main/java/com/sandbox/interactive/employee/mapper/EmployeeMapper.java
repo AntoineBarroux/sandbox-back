@@ -9,7 +9,7 @@ import org.mapstruct.Mapper;
 
 import java.util.Optional;
 
-@Mapper
+@Mapper(uses = {SupervisorMapper.class})
 public interface EmployeeMapper {
 
     EmployeeEntity toEntity(Employee employee);
