@@ -1,5 +1,6 @@
 package com.sandbox.interactive.employee.controller;
 
+import com.sandbox.interactive.employee.controller.requests.EmployeeUpdateRequest;
 import com.sandbox.interactive.employee.mapper.EmployeeIdToEntityMapper;
 import com.sandbox.interactive.employee.mapper.EmployeeMapperImpl;
 import com.sandbox.interactive.employee.repository.entity.EmployeeEntity;
@@ -134,7 +135,7 @@ class EmployeeControllerTest {
     @Test
     void should_correctly_update_employee() throws Exception {
         final var employee = new Employee(UUID.randomUUID(), ZonedDateTime.now(), "John", "Doe", "Manager", Optional.empty());
-        when(employeeService.updateEmployee(any(Employee.class))).thenReturn(employee);
+        when(employeeService.updateEmployee(any(EmployeeUpdateRequest.class))).thenReturn(employee);
 
         mockMvc.perform(put("/employee/" + employee.id()).content("""
                          {
@@ -167,7 +168,7 @@ class EmployeeControllerTest {
     @Test
     void should_get_not_found_if_employee_does_not_exist() throws Exception {
         final var employee = new Employee(UUID.randomUUID(), ZonedDateTime.now(), "John", "Doe", "Manager", Optional.empty());
-        when(employeeService.updateEmployee(any(Employee.class))).thenThrow(new EntityNotFoundException("Employee not found"));
+        when(employeeService.updateEmployee(any(EmployeeUpdateRequest.class))).thenThrow(new EntityNotFoundException("Employee not found"));
 
         mockMvc.perform(put("/employee/" + employee.id()).content("""
                  {

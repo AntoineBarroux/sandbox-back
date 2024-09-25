@@ -106,7 +106,7 @@ public class EmployeeE2ETest {
                 .when()
                 .put("/employee/" + employee.id())
                 .then()
-                .statusCode(HttpStatus.SC_NOT_FOUND);
+                .statusCode(HttpStatus.SC_BAD_REQUEST);
     }
 
     @Test

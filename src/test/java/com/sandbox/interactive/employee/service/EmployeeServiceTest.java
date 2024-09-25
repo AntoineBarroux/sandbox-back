@@ -1,5 +1,6 @@
 package com.sandbox.interactive.employee.service;
 
+import com.sandbox.interactive.employee.controller.requests.EmployeeUpdateRequest;
 import com.sandbox.interactive.employee.mapper.EmployeeMapperImpl;
 import com.sandbox.interactive.employee.repository.EmployeeRepositoryStub;
 import com.sandbox.interactive.employee.service.model.Employee;
@@ -26,9 +27,8 @@ class EmployeeServiceTest {
     @Test
     void should_correctly_throw_if_updating_non_existing_employee() {
         // given
-        final var employee = new Employee(UUID.randomUUID(), ZonedDateTime.now(), "John", "Doe", "Software Developer", Optional.empty());
-
-        Assertions.assertThatThrownBy(() -> employeeService.updateEmployee(employee))
+        final var employeeUpdateRequest = new EmployeeUpdateRequest(UUID.randomUUID(), "John", "Doe", "Software Developer", Optional.empty());
+        Assertions.assertThatThrownBy(() -> employeeService.updateEmployee(employeeUpdateRequest))
                 .isInstanceOf(EntityNotFoundException.class)
                 .hasMessage("Employee not found");
     }
@@ -39,10 +39,12 @@ class EmployeeServiceTest {
         final var employee = new Employee(UUID.randomUUID(), ZonedDateTime.now(), "John", "Doe", "Software Developer", Optional.empty());
         final var saved = employeeService.saveEmployee(employee);
 
+        final var employeeUpdateRequest = new EmployeeUpdateRequest(saved.id(), "Jane", "Doe", "Software Developer", Optional.empty());
         // when
-        final var updated = employeeService.updateEmployee(saved);
+        final var updated = employeeService.updateEmployee(employeeUpdateRequest);
 
         // then
-        assertThat(updated).isEqualTo(saved);
+        assertThat(saved.id()).isEqualTo(updated.id());
+        assertThat(updated.firstName()).isEqualTo("Jane");
     }
 }

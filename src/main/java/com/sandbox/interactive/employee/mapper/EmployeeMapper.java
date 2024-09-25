@@ -22,9 +22,16 @@ public interface EmployeeMapper {
     @Mapping(target = "supervisor", source = "supervisorId")
     Employee createToDomain(EmployeeCreateRequest employeeCreateRequest);
 
-    @Mapping(target = "createdAt", ignore = true)
-    @Mapping(target = "supervisor", source = "supervisorId")
-    Employee updateToDomain(EmployeeUpdateRequest employeeUpdateRequest);
+    default Employee updateToDomain(EmployeeUpdateRequest employeeUpdateRequest, Optional<EmployeeEntity> supervisor) {
+        return new Employee(
+                employeeUpdateRequest.id(),
+                null,
+                employeeUpdateRequest.firstName(),
+                employeeUpdateRequest.lastName(),
+                employeeUpdateRequest.position(),
+                supervisor.map(this::toDomain)
+        );
+    }
 
     default EmployeeEntity toSupervisor(Optional<Employee> supervisor) {
         return supervisor.map(this::toEntity).orElse(null);

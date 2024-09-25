@@ -85,7 +85,7 @@ public class EmployeeController {
 
         return ResponseEntity.ok()
                 .body(employeeMapper.toDTO(
-                        employeeService.updateEmployee(employeeMapper.updateToDomain(employeeUpdateRequest))
+                        employeeService.updateEmployee(employeeUpdateRequest)
                 ));
     }
 

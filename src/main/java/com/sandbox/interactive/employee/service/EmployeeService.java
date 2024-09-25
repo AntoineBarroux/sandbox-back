@@ -1,6 +1,9 @@
 package com.sandbox.interactive.employee.service;
 
+import com.sandbox.interactive.employee.controller.requests.EmployeeUpdateRequest;
+import com.sandbox.interactive.employee.exception.SupervisorNotFoundException;
 import com.sandbox.interactive.employee.mapper.EmployeeMapper;
+import com.sandbox.interactive.employee.repository.entity.EmployeeEntity;
 import com.sandbox.interactive.employee.service.domain.EmployeeRepository;
 import com.sandbox.interactive.employee.service.model.Employee;
 import jakarta.persistence.EntityNotFoundException;
@@ -8,6 +11,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 
+import java.util.Optional;
 import java.util.UUID;
 
 @Service
@@ -32,11 +36,18 @@ public class EmployeeService {
         );
     }
 
-    public Employee updateEmployee(Employee employee) {
-        if (!employeeRepository.existsById(employee.id())) {
+    public Employee updateEmployee(EmployeeUpdateRequest employeeUpdateRequest) {
+        if (!employeeRepository.existsById(employeeUpdateRequest.id())) {
             throw new EntityNotFoundException("Employee not found");
         }
-        return saveEmployee(employee);
+        final Optional<EmployeeEntity> supervisor = employeeUpdateRequest.supervisorId().isPresent() ?
+                employeeUpdateRequest.supervisorId()
+                        .map(employeeRepository::findById)
+                        .filter(Optional::isPresent)
+                        .orElseThrow(() -> new SupervisorNotFoundException("Supervisor not found")) :
+                Optional.empty();
+
+        return saveEmployee(employeeMapper.updateToDomain(employeeUpdateRequest, supervisor));
     }
 
     public void deleteEmployeeById(UUID employeeId) {
