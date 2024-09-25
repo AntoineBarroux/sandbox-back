@@ -1,0 +1,7 @@
+{
+  "id": "%id%",
+  "firstName": "John",
+  "lastName": "Doe",
+  "position": "Devops engineer",
+  "supervisorId": "%supervisorId%"
+}
