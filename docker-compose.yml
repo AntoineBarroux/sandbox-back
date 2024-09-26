@@ -9,7 +9,7 @@ services:
       - '8050:8050'
     environment:
       SERVER_PORT: 8050
-      SPRING_DATASOURCE_URL: jdbc:postgresql://employee-postgres:5432/employee
+      SPRING_DATASOURCE_URL: jdbc:postgresql://sandbox-postgres:5432/employee
       SPRING_DATASOURCE_USERNAME: employee
       SPRING_DATASOURCE_PASSWORD: employee
 

@@ -5,7 +5,7 @@ To run this Employee App, you need to clone this repository and the
 
 After you successfully cloned the repositories, you have to build the backend application by running the following command within the API project : 
 ```
-mvn clean install
+./mvnw clean install
 ```
 Warning : you need to have your JAVA_HOME pointing to Java 21. Otherwise, you can just build it from your IDE.
 
