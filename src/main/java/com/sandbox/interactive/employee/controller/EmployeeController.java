@@ -15,6 +15,7 @@ import org.slf4j.LoggerFactory;
 import org.springdoc.core.annotations.ParameterObject;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -44,7 +45,7 @@ public class EmployeeController {
         LOG.info("Calling GET employees with page {} and size {}", page, size);
 
         return ResponseEntity.ok()
-                .body(employeeService.getEmployees(PageRequest.of(page, size))
+                .body(employeeService.getEmployees(PageRequest.of(page, size, Sort.by("createdAt").descending()))
                         .map(employeeMapper::toDTO));
     }
 

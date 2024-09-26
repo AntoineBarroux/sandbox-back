@@ -13,6 +13,13 @@ services:
       SPRING_DATASOURCE_USERNAME: employee
       SPRING_DATASOURCE_PASSWORD: employee
 
+  employee-front:
+    container_name: employee-front
+    build:
+      context: ../employee-front
+    ports:
+      - '4200:4200'
+
   employee-postgres:
     container_name: employee-postgres
     image: 'postgres:16.4-alpine'
