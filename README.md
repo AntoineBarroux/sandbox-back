@@ -18,3 +18,8 @@ Backend server is hosted on port 8050 and you can find the API documentation her
 To access it, you of course need to have your API running.
 
 Frontend application runs on port 4200, so you can access it by going to [http://localhost:4200](http://localhost:4200).
+Please run 
+```
+npm ci
+```
+in the frontend project so that you can navigate through the code without errors.
