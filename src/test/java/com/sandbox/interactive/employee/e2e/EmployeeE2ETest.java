@@ -41,12 +41,12 @@ public class EmployeeE2ETest {
     }
 
     @Test
-    void should_correctly_paginate_results() {
+    void should_correctly_paginate_results_and_sort_by_created_date() {
         final var employee = createEmployee();
         final var manager = createManager();
         assertThat(findAllEmployees(0, 10)).containsExactlyInAnyOrder(employee, manager);
-        assertThat(findAllEmployees(0, 1)).containsExactly(employee);
-        assertThat(findAllEmployees(1, 1)).containsExactly(manager);
+        assertThat(findAllEmployees(0, 1)).containsExactly(manager);
+        assertThat(findAllEmployees(1, 1)).containsExactly(employee);
     }
 
     @Test

@@ -1,8 +1,8 @@
 version: "3"
 
 services:
-  employee-api:
-    container_name: employee-api
+  sandbox-api:
+    container_name: sandbox-api
     build:
       context: .
     ports:
@@ -13,15 +13,15 @@ services:
       SPRING_DATASOURCE_USERNAME: employee
       SPRING_DATASOURCE_PASSWORD: employee
 
-  employee-front:
-    container_name: employee-front
+  sandbox-front:
+    container_name: sandbox-front
     build:
-      context: ../employee-front
+      context: ../sandbox-front
     ports:
       - '4200:4200'
 
-  employee-postgres:
-    container_name: employee-postgres
+  sandbox-postgres:
+    container_name: sandbox-postgres
     image: 'postgres:16.4-alpine'
     ports:
       - '5434:5432'
